@@ -6,10 +6,11 @@ import * as sdk from 'commerce-sdk-isomorphic'
 class CustomShopperBaskets extends OcapiShopperBaskets {
     constructor(config) {
         super(config)
+        this.scapi = new sdk.ShopperBaskets(config)
     }
 
     mergeBasket(args) {
-        return sdk.ShopperBaskets.mergeBasket(args)
+        return this.scapi.mergeBasket(args)
     }
 }
 
