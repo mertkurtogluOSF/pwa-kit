@@ -191,8 +191,7 @@ const common = {
             patterns: [
                 {from: 'app/static/', to: 'static/'},
                 {
-                    from: 'config/',
-                    to: 'config/',
+                    from: 'config/**/*',
                     globOptions: {
                         ignore: ['**/local.*']
                     },
