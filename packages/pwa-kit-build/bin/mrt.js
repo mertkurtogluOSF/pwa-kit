@@ -7,6 +7,7 @@
  */
 const p = require('path')
 const fs = require('fs')
+const zlib=require('zlib')
 const program = require('commander')
 const { CloudWatchLogsClient, FilterLogEventsCommand } = require("@aws-sdk/client-cloudwatch-logs");
 const {fromCognitoIdentity} =  require("@aws-sdk/credential-providers")
@@ -246,58 +247,44 @@ const main = () => {
         )
         .action(({project, environment}) => {
             try {
-                const settingsPath = scriptUtils.getSettingsPath()
-                const auth = JSON.parse(fs.readFileSync(
-                    settingsPath
-                ))
                 const options = {
-                    url: `https://cloud-mahdi.mobify-staging.com/api/projects/${project}/target/${environment}/log/`,
+                    url: `https://wcog07iulc.execute-api.us-east-1.amazonaws.com/logs/iterator`,
                     method: 'GET',
                     headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${auth.api_key}`
+                        'Accept': 'application/json'
                     }
                 };
 
                 request(options, function(err, res, body) {
                     let json = JSON.parse(body);
-                    logGroupName = json.log_group;
-                    region = json.region
-                    identityId = json.identity_id;
-                    const cloudwatch = new CloudWatchLogsClient({
-                        region,
-                        credentials: fromCognitoIdentity({
-                            identityId,
-                            logins: {
-                                "cognito-identity.amazonaws.com": json.token
-                            }
-                        })
-                    });
-                    next_token = null
+                    iterator = json.ShardIterator
                     function loop_display_logs(){
-                        const command = new FilterLogEventsCommand({
-                            logGroupName,
-                            nextToken: next_token
-                        })
-                        cloudwatch.send(command).then(
-                            (data) => {
-                                // display logs.
-                                if(data.events.length > 0){
-                                    console.log(data.events);
-                                    next_token = data.nextToken;
-                                }
-                                setTimeout(loop_display_logs, 2000);
-                            },
-                            (error) => {
-                                // error handling.
-                                console.log('error', error)
+                        const fetch_logs = {
+                            url: `https://wcog07iulc.execute-api.us-east-1.amazonaws.com/logs`,
+                            method: 'GET',
+                            headers: {
+                                'Shard-Iterator': iterator
                             }
-                        );
+                        }
+                        request(fetch_logs, function(err, res, body) {
+                            if(err){ 
+                                console.log('error', err)
+                                setTimeout(loop_display_logs, 2000);
+                                return
+                            }
+                            let json = JSON.parse(body)
+                            for(i in json.Records){
+                                r = json.Records[i]
+                                const payload=Buffer.from(r.Data, 'base64')
+                                const events = JSON.parse(zlib.unzipSync(payload).toString()).logEvents
+                                console.log(events)
+                            }
+                            setTimeout(loop_display_logs, 2000);
+                        });
                     }
                     loop_display_logs()
                 });
             } catch (e) {
-                console.error('Failed to read credentials.')
                 console.error(e)
                 process.exit(1)
             }
