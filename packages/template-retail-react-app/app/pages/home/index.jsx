@@ -8,6 +8,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {useIntl, FormattedMessage} from 'react-intl'
+import { getLayout } from '../../layouts/site-layout'
 
 // Components
 import {
@@ -39,6 +40,7 @@ import {
     HOME_SHOP_PRODUCTS_CATEGORY_ID,
     HOME_SHOP_PRODUCTS_LIMIT
 } from '../../constants'
+import {IndexLayout} from '../../layouts'
 
 /**
  * This is the home page for Retail React App.
@@ -56,7 +58,11 @@ const Home = ({productSearchResult, isLoading}) => {
                 description="Commerce Cloud Retail React App"
                 keywords="Commerce Cloud, Retail React App, React Storefront"
             />
-
+            <Link href="/account-settings/basic-information">
+                <a className="inline-block bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg px-6 py-4 leading-tight">
+                    View account settings
+                </a>
+            </Link>
             <Hero
                 title={intl.formatMessage({
                     defaultMessage: 'The React PWA Starter Store for Retail',
@@ -291,6 +297,8 @@ Home.getProps = async ({res, api}) => {
 
     return {productSearchResult}
 }
+Home.getLayout = getLayout
+Home.pageLayout = IndexLayout
 
 Home.propTypes = {
     /**

@@ -37,6 +37,9 @@ const ProductList = loadable(() => import('./pages/product-list'), {fallback})
 const Wishlist = loadable(() => import('./pages/account/wishlist'), {fallback})
 const PageNotFound = loadable(() => import('./pages/page-not-found'))
 
+
+import AccountSettingsBasicInformation from "./pages/account-settings/basic-information";
+
 const routes = [
     {
         path: '/',
@@ -99,9 +102,13 @@ const routes = [
         component: Wishlist
     },
     {
+        path: '/account-settings/basic-information',
+        component: AccountSettingsBasicInformation
+    },
+    {
         path: '*',
         component: PageNotFound
-    }
+    },
 ]
 
 export default () => {
