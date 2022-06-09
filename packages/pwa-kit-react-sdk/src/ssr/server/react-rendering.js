@@ -9,6 +9,7 @@
  * @module progressive-web-sdk/ssr/server/react-rendering
  */
 
+import ssrPrepass from 'react-ssr-prepass'
 import path from 'path'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
@@ -189,6 +190,7 @@ export const render = async (req, res, next) => {
         effectContext: {requests: []}
     }
     try {
+        // await ssrPrepass(WrappedApp)
         // Pre-render app to get useProps requests
         await renderApp(args)
 
