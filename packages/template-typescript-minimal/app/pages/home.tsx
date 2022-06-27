@@ -5,6 +5,8 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {useEffect, useState} from 'react'
+// import {useServerEffect} from '../components/_app-config/index'
+import {useServerEffect} from 'pwa-kit-react-sdk/ssr/universal/server-effects'
 
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
@@ -89,6 +91,11 @@ const Home = ({value}: Props) => {
         }, 1000)
         return () => clearInterval(interval)
     }, [counter, setCounter])
+
+    useServerEffect(async () => {
+        console.log('Home useServerEffect')
+        return 1
+    })
 
     return (
         <div>
