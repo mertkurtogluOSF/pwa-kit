@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 module.exports = {
-    parser: 'babel-eslint',
+    parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaVersion: 2017,
         sourceType: 'module',
@@ -19,8 +19,14 @@ module.exports = {
         browser: true,
         jest: true
     },
-    extends: ['eslint:recommended', 'plugin:react/recommended', 'prettier', 'prettier/react'],
-    plugins: ['header', 'react', 'prettier'],
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:react/recommended',
+        'prettier',
+        'prettier/react'
+    ],
+    plugins: ['@typescript-eslint', 'header', 'react', 'prettier'],
     settings: {
         react: {
             version: '16.8'
