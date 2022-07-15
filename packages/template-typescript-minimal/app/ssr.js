@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 // TODO: now there's eslint error here
+// TODO: maybe don't fix it yet. Get a draft PR first and get some feedback
 const path = require('path')
 const {getRuntime} = require('pwa-kit-runtime/ssr/server/express')
 const pkg = require('../package.json')
