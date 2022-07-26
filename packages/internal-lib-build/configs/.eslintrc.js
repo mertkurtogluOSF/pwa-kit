@@ -32,6 +32,7 @@ module.exports = {
             version: '16.8'
         }
     },
+    reportUnusedDisableDirectives: true,
     rules: {
         'prettier/prettier': ['error'],
         'no-console': 'off',
