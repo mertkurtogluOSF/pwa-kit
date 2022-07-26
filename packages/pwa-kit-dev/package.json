@@ -90,7 +90,7 @@
     "minimatch": "3.0.4",
     "morgan": "1.9.1",
     "open": "^8.4.0",
-    "prettier": "^1.18.2",
+    "prettier": "^2.7.1",
     "pwa-kit-runtime": "^2.2.0-dev",
     "react-refresh": "^0.13.0",
     "replace-in-file": "^6.2.0",
