@@ -201,8 +201,7 @@ const DrawerMenu = ({isOpen, onClose = noop, onLogoClick = noop, root}) => {
                                                             id: 'profile',
                                                             path: '',
                                                             name: intl.formatMessage({
-                                                                id:
-                                                                    'drawer_menu.button.account_details',
+                                                                id: 'drawer_menu.button.account_details',
                                                                 defaultMessage: 'Account Details'
                                                             })
                                                         },
@@ -210,8 +209,7 @@ const DrawerMenu = ({isOpen, onClose = noop, onLogoClick = noop, root}) => {
                                                             id: 'orders',
                                                             path: '/orders',
                                                             name: intl.formatMessage({
-                                                                id:
-                                                                    'drawer_menu.button.order_history',
+                                                                id: 'drawer_menu.button.order_history',
                                                                 defaultMessage: 'Order History'
                                                             })
                                                         },
@@ -227,8 +225,7 @@ const DrawerMenu = ({isOpen, onClose = noop, onLogoClick = noop, root}) => {
                                                             id: 'payments',
                                                             path: '/payments',
                                                             name: intl.formatMessage({
-                                                                id:
-                                                                    'drawer_menu.button.payment_methods',
+                                                                id: 'drawer_menu.button.payment_methods',
                                                                 defaultMessage: 'Payment Methods'
                                                             })
                                                         }
@@ -298,16 +295,14 @@ const DrawerMenu = ({isOpen, onClose = noop, onLogoClick = noop, root}) => {
                                             {
                                                 id: 'contactus',
                                                 name: intl.formatMessage({
-                                                    id:
-                                                        'drawer_menu.link.customer_support.contact_us',
+                                                    id: 'drawer_menu.link.customer_support.contact_us',
                                                     defaultMessage: 'Contact Us'
                                                 })
                                             },
                                             {
                                                 id: 'shippingandreturns',
                                                 name: intl.formatMessage({
-                                                    id:
-                                                        'drawer_menu.link.customer_support.shipping_and_returns',
+                                                    id: 'drawer_menu.link.customer_support.shipping_and_returns',
                                                     defaultMessage: 'Shipping & Returns'
                                                 })
                                             }

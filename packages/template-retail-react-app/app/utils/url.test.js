@@ -418,7 +418,7 @@ describe('buildPathWithUrlConfig', () => {
     })
 })
 
-describe('absoluteUrl', function() {
+describe('absoluteUrl', function () {
     test('return expected when path is a relative url', () => {
         const url = absoluteUrl('/uk/en/women/dresses')
         expect(url).toEqual('https://www.example.com/uk/en/women/dresses')

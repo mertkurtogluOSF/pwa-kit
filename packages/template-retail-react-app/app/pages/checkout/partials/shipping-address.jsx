@@ -19,13 +19,8 @@ const submitButtonMessage = defineMessage({
 export default function ShippingAddress() {
     const {formatMessage} = useIntl()
 
-    const {
-        step,
-        selectedShippingAddress,
-        setShippingAddress,
-        setCheckoutStep,
-        goToNextStep
-    } = useCheckout()
+    const {step, selectedShippingAddress, setShippingAddress, setCheckoutStep, goToNextStep} =
+        useCheckout()
     const [isLoading, setIsLoading] = useState()
 
     const submitAndContinue = async (address) => {

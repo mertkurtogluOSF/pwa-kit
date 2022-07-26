@@ -106,9 +106,7 @@ const ContactInfo = () => {
             editLabel={
                 !isGuestCheckout ? (
                     <FormattedMessage defaultMessage="Sign Out" id="contact_info.action.sign_out" />
-                ) : (
-                    undefined
-                )
+                ) : undefined
             }
         >
             <ToggleCardEdit>
