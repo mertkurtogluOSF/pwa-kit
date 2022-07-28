@@ -4,12 +4,26 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {ApiClients, Argument, DataType, QueryResponse} from '../types'
+import {ApiClients, Argument, DataType, QueryResponse, ApiClientConfigParams} from '../types'
 import {useAsync} from '../useAsync'
 import useCommerceApi from '../useCommerceApi'
+import { ShopperProductsTypes } from 'commerce-sdk-isomorphic';
+
 
 type Client = ApiClients['shopperProducts']
+type Parameters = Omit<Argument<Client['getProducts']>, 'headers'>
+type Header = Omit<Argument<Client['getProducts']>, 'parameters'>
 
+type test = ShopperProductsTypes.CompositeParameters<{
+    organizationId: string;
+    ids: string;
+    inventoryIds?: string;
+    currency?: string;
+    locale?: string;
+    allImages?: boolean;
+    perPricebook?: boolean;
+    siteId: string;
+}, ApiClientConfigParams>
 /**
  * A hook for `ShopperProducts#getProducts`.
  * Allows access to multiple products by a single request. Only products that are online and assigned to a site catalog are returned. The maximum number of productIDs that can be requested are 24. Along with product details, the availability, images, price, promotions, and variations for the valid products will be included, as appropriate.
@@ -18,22 +32,22 @@ type Client = ApiClients['shopperProducts']
  * @returns An object describing the state of the request.
  */
 export const useProducts = (
-    arg: Argument<Client['getProducts']>,
-    deps: unknown[] = []
+    parameters: Omit<Argument<Client['getProducts']>, 'headers'>,
+    deps: unknown[] = [],
+    opts?: Omit<Argument<Client['getProducts']>, 'parameters'>
 ): QueryResponse<DataType<Client['getProducts']>> => {
-    if (!arg) {
+    if (!parameters) {
         throw new Error('Missing ids in parameters to make request')
     }
     const {shopperProducts: client} = useCommerceApi()
-    const {
-        parameters: {ids}
-    } = arg
+    const {ids} = parameters
+    // const ids = <string>arg.ids
     // by default the source is the ids string
     let source: unknown[] = [ids]
-    if (deps.length) {
+    if (deps && deps.length) {
         source = deps
     }
-    return useAsync(() => client.getProducts(arg), source)
+    return useAsync(() => client.getProducts({parameters: {ids}, ...opts}), source)
 }
 /**
  * A hook for `ShopperProducts#getProduct`.
