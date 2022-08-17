@@ -10,6 +10,7 @@ import {render, screen} from '@testing-library/react'
 import useCommerceApi from './hooks/useCommerceApi'
 import CommerceApiProvider from './provider'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {renderWithProviders} from './test-utils'
 
 const sampleProps = {
     proxy: 'http://localhost:3000/mobify/proxy/api',
@@ -19,7 +20,7 @@ const sampleProps = {
     siteId: 'RefArchGlobal',
     locale: 'en_US',
     redirectURI: 'http://localhost:3000/callback',
-    currency: 'USD'
+    currency: 'USD',
 }
 const queryClient = new QueryClient()
 
