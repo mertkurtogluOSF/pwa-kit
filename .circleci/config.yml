@@ -246,6 +246,7 @@ jobs:
       - setup_windows
       - runtests
   testNode14npm7:
+    resource_class: xlarge
     docker:
       - image: circleci/node:14-stretch-browsers
     steps:
