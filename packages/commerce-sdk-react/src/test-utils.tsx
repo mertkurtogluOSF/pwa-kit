@@ -19,14 +19,14 @@ export const TEST_CONFIGS = {
     redirectURI: 'http://localhost:3000/callback',
     siteId: 'RefArchGlobal',
     locale: 'en_US',
-    currency: 'USD',
+    currency: 'USD'
 }
 const TestProviders = (props: {children: React.ReactNode}) => {
     return (
         <CommerceApiProvider
             {...TEST_CONFIGS}
             queryClientConfig={{
-                defaultOptions: {queries: {retry: false}, mutations: {retry: false}},
+                defaultOptions: {queries: {retry: false}, mutations: {retry: false}}
             }}
         >
             {props.children}
@@ -84,7 +84,7 @@ export const mockHttpResponses = (options: NockBackOptions) => {
                 return !!q['code_challenge']
             })
             .reply(303, undefined, {
-                Location: `/callback?usid=${USID}&code=${CODE}`,
+                Location: `/callback?usid=${USID}&code=${CODE}`
             })
             .get(`/callback?usid=${USID}&code=${CODE}`)
             .reply(200)
@@ -104,7 +104,7 @@ export const mockHttpResponses = (options: NockBackOptions) => {
                 usid: '851fd6b0-ef19-4eac-b556-fa13827708ed',
                 customer_id: 'bcmbsVxKo0wHaRxuwVmqYYxudH',
                 enc_user_id: 'adb831a7fdd83dd1e2a309ce7591dff8',
-                idp_access_token: null,
+                idp_access_token: null
             })
     }
 
@@ -126,12 +126,12 @@ export const mockHttpResponses = (options: NockBackOptions) => {
 
                     const locationHeaderIndex =
                         def.rawHeaders.findIndex((val) => val === 'location') + 1
-                    def.rawHeaders[locationHeaderIndex] = (
-                        def.rawHeaders[locationHeaderIndex] as string
-                    )
+                    def.rawHeaders[locationHeaderIndex] = (def.rawHeaders[
+                        locationHeaderIndex
+                    ] as string)
                         .replace(/usid=.*&/, `usid=${USID}&`)
                         .replace(/code=.*/, `code=${CODE}`)
-                },
+                }
             },
             {
                 matcher: (path: string | RegExp) => {
@@ -142,8 +142,8 @@ export const mockHttpResponses = (options: NockBackOptions) => {
                         .toString()
                         .replace(/usid=.*&/, `usid=${USID}&`)
                         .replace(/code=.*/, `code=${CODE}`)
-                },
-            },
+                }
+            }
         ]
         return defs.map((def) => {
             recordPatchers.forEach(({matcher, patcher}) => {
