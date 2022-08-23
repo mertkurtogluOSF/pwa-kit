@@ -32,8 +32,8 @@ const ProductName = ({id}: {id: string}) => {
             const product = await api.shopperProducts.getProduct({
                 parameters: {id},
                 headers: {
-                    Authorization: `Bearer ${access_token}`
-                }
+                    Authorization: `Bearer ${access_token}`,
+                },
             })
             setProductName(product.name as string)
         }
@@ -49,8 +49,8 @@ const ProductName2 = ({id}: {id: string}) => {
         api.shopperProducts.getProduct({
             parameters: {id},
             headers: {
-                Authorization: `Bearer ${access_token}`
-            }
+                Authorization: `Bearer ${access_token}`,
+            },
         })
     )
 
@@ -81,44 +81,33 @@ describe('lower-level hook', () => {
     )
 })
 
-// describe('higher-level hook', () => {
-//     test(
-//         'useAsync happy path',
-//         withMocks(async () => {
-//             renderWithProviders(<ProductName2 id="25591862M" />)
-//             const productName = 'Stripe Walking Short'
+describe('higher-level hook', () => {
+    test(
+        'useAsync happy path',
+        withMocks(async () => {
+            renderWithProviders(<ProductName2 id="25591862M" />)
+            const productName = 'Stripe Walking Short'
 
-//             expect(screen.queryByText(productName)).toBeNull()
-//             expect(screen.getByText('Loading...')).toBeInTheDocument()
+            expect(screen.queryByText(productName)).toBeNull()
+            expect(screen.getByText('Loading...')).toBeInTheDocument()
 
-//             await waitFor(() => screen.getByText(productName))
+            await waitFor(() => screen.getByText(productName))
 
-//             expect(screen.getByText(productName)).toBeInTheDocument()
-//             expect(screen.queryByText('Loading...')).toBeNull()
-//         })
-//     )
+            expect(screen.getByText(productName)).toBeInTheDocument()
+            expect(screen.queryByText('Loading...')).toBeNull()
+        })
+    )
 
-//     test(
-//         'useAsync error',
-//         withMocks(async () => {
-//             // Pass in a non-existent product id
-//             renderWithProviders(<ProductName2 id="1" />)
-//             expect(screen.getByText('Loading...')).toBeInTheDocument()
+    test(
+        'useAsync error',
+        withMocks(async () => {
+            // Pass in a non-existent product id
+            renderWithProviders(<ProductName2 id="1" />)
+            expect(screen.getByText('Loading...')).toBeInTheDocument()
 
-//             await waitFor(() => screen.getByText('error'))
-//             expect(screen.getByText('error')).toBeInTheDocument()
-//             expect(screen.queryByText('Loading...')).toBeNull()
-//         })
-//     )
-// })
-
-// describe('highest-level hook', () => {
-//     test(
-//         'useProduct',
-//         withMocks(async () => {
-//             // TODO: what should get tested in a highest-level hook (like useProduct)?
-//             // If we've tested the lower-level hooks (useCommerceApi, useAsync), would that be sufficient?
-//             // And can we assume that the isomorphic sdk is well-tested already?
-//         })
-//     )
-// })
+            await waitFor(() => screen.getByText('error'))
+            expect(screen.getByText('error')).toBeInTheDocument()
+            expect(screen.queryByText('Loading...')).toBeNull()
+        })
+    )
+})

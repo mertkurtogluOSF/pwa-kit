@@ -11,7 +11,7 @@ import nock from 'nock'
 import React from 'react'
 import CommerceApiProvider from './provider'
 
-const sampleProps = {
+export const TEST_CONFIGS = {
     proxy: 'http://localhost:3000/mobify/proxy/api',
     clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
     organizationId: 'f_ecom_zzrf_001',
@@ -19,14 +19,14 @@ const sampleProps = {
     redirectURI: 'http://localhost:3000/callback',
     siteId: 'RefArchGlobal',
     locale: 'en_US',
-    currency: 'USD'
+    currency: 'USD',
 }
 const TestProviders = (props: {children: React.ReactNode}) => {
     return (
         <CommerceApiProvider
-            {...sampleProps}
+            {...TEST_CONFIGS}
             queryClientConfig={{
-                defaultOptions: {queries: {retry: false}, mutations: {retry: false}}
+                defaultOptions: {queries: {retry: false}, mutations: {retry: false}},
             }}
         >
             {props.children}
@@ -71,24 +71,30 @@ export const mockHttpResponses = (options: NockBackOptions) => {
     const nockBack = nock.back
     nockBack.fixtures = options.directory
 
+    const USID = 'USID'
+    const CODE = 'CODE'
+    const CLIENT_ID = 'CLIENT_ID'
+    const CODE_CHALLENGE = 'CODE_CHALLENGE'
+
     const mockAuthCalls = () => {
         nock('http://localhost:3000')
-            .get((uri) => {
-                return uri.includes('/oauth2/authorize')
-            })
+            .persist()
+            .get((uri) => uri.includes('/oauth2/authorize'))
             .query((q) => {
                 return !!q['code_challenge']
             })
             .reply(303, undefined, {
-                Location: '/callback?usid=12345&code=ABCDE'
+                Location: `/callback?usid=${USID}&code=${CODE}`,
             })
-            .get('/callback?usid=12345&code=ABCDE')
+            .get(`/callback?usid=${USID}&code=${CODE}`)
             .reply(200)
 
         nock('http://localhost:3000')
-            .post((uri) => {
-                return uri.includes('/oauth2/token')
-            })
+            .persist()
+            .post(
+                (uri) => uri.includes('/oauth2/token'),
+                () => true
+            )
             .reply(200, {
                 access_token: jwt.sign({exp: Math.floor(Date.now() / 1000) + 1800}, 'secret'),
                 id_token: '',
@@ -98,8 +104,56 @@ export const mockHttpResponses = (options: NockBackOptions) => {
                 usid: '851fd6b0-ef19-4eac-b556-fa13827708ed',
                 customer_id: 'bcmbsVxKo0wHaRxuwVmqYYxudH',
                 enc_user_id: 'adb831a7fdd83dd1e2a309ce7591dff8',
-                idp_access_token: null
+                idp_access_token: null,
             })
+    }
+
+    // Every time we update the Nock recordings, we'd like to run
+    // this afterRecord function to modify the recording. Reasons:
+    // 1. SLAS calls include random unique identifiers and we need to mock them
+    // 2. For security reasons, we don't want to store real credentials in the repo
+    const afterRecord = (defs: nock.Definition[]) => {
+        const recordPatchers = [
+            {
+                matcher: (path: string | RegExp) => {
+                    return path.toString().includes('code_challenge')
+                },
+                patcher: (def: nock.Definition & {rawHeaders: string[]}) => {
+                    def.path = def.path
+                        .toString()
+                        .replace(/client_id=.*&/, `client_id=${CLIENT_ID}&`)
+                        .replace(/code_challenge=.*/, `code_challenge=${CODE_CHALLENGE}`)
+
+                    const locationHeaderIndex =
+                        def.rawHeaders.findIndex((val) => val === 'location') + 1
+                    def.rawHeaders[locationHeaderIndex] = (
+                        def.rawHeaders[locationHeaderIndex] as string
+                    )
+                        .replace(/usid=.*&/, `usid=${USID}&`)
+                        .replace(/code=.*/, `code=${CODE}`)
+                },
+            },
+            {
+                matcher: (path: string | RegExp) => {
+                    return path.toString().includes('/callback')
+                },
+                patcher: (def: nock.Definition) => {
+                    def.path = def.path
+                        .toString()
+                        .replace(/usid=.*&/, `usid=${USID}&`)
+                        .replace(/code=.*/, `code=${CODE}`)
+                },
+            },
+        ]
+        return defs.map((def) => {
+            recordPatchers.forEach(({matcher, patcher}) => {
+                if (matcher(def.path)) {
+                    // @ts-ignore Nock types missing property rawHeaders
+                    patcher(def)
+                }
+            })
+            return def
+        })
     }
 
     const withMocks = (testFn: () => Promise<void> | void) => {
@@ -108,7 +162,7 @@ export const mockHttpResponses = (options: NockBackOptions) => {
             const fileName = `${slugify(testName)}.json`
 
             nockBack.setMode(mode)
-            const {nockDone} = await nockBack(fileName)
+            const {nockDone} = await nockBack(fileName, {afterRecord})
             mockAuthCalls()
             await testFn()
             nockDone()
