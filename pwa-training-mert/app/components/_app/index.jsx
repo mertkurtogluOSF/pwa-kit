@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import fetch from 'cross-fetch'
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useHistory, useLocation} from 'react-router-dom'
@@ -55,7 +56,7 @@ const DEFAULT_NAV_DEPTH = 3
 const DEFAULT_ROOT_CATEGORY = 'root'
 
 const App = (props) => {
-    const {children, targetLocale, messages, categories: allCategories = {}} = props
+    const {children, targetLocale, messages, categories: allCategories = {}, privacyPolicy} = props
 
     const appOrigin = getAppOrigin()
 
@@ -260,6 +261,12 @@ const App = (props) => {
 
                                 {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
+                                <div>
+                                    {privacyPolicy && (
+                                        <div dangerouslySetInnerHTML={{__html: privacyPolicy.c_body}} />
+                                    )}
+                                </div>
+
                                 <AuthModal {...authModal} />
                             </AddToCartModalProvider>
                         </Box>
@@ -330,10 +337,20 @@ Learn more with our localization guide. https://sfdc.co/localization-guide
     // the application.
     const categories = flatten(rootCategory, 'categories')
 
+    let privacyPolicy
+    const result = await fetch(
+        `http://localhost:3000/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/content/privacy-policy?client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
+    )
+
+    if (result.ok) {
+        privacyPolicy = await result.json()
+    }
+
     return {
         targetLocale,
         messages,
         categories,
+        privacyPolicy: privacyPolicy,
         config: res?.locals?.config
     }
 }
@@ -343,7 +360,8 @@ App.propTypes = {
     targetLocale: PropTypes.string,
     messages: PropTypes.object,
     categories: PropTypes.object,
-    config: PropTypes.object
+    config: PropTypes.object,
+    privacyPolicy: PropTypes.object
 }
 
 export default App
