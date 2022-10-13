@@ -36,6 +36,7 @@ const ProductDetail = loadable(() => import('./pages/product-detail'), {fallback
 const ProductList = loadable(() => import('./pages/product-list'), {fallback})
 const Wishlist = loadable(() => import('./pages/account/wishlist'), {fallback})
 const PageNotFound = loadable(() => import('./pages/page-not-found'))
+const ContentSearch = loadable(() => import('./pages/content-search'), {fallback})
 
 const routes = [
     {
@@ -97,6 +98,10 @@ const routes = [
     {
         path: '/account/wishlist',
         component: Wishlist
+    },
+    {
+        path: '/content-search',
+        component: ContentSearch
     },
     {
         path: '*',
