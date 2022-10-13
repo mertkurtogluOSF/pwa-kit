@@ -1,9 +1,12 @@
 import React from 'react'
 import fetch from 'cross-fetch'
 
-import {HTTPError} from 'pwa-kit-react-sdk/ssr/universal/errors'
+//import {HTTPError} from 'pwa-kit-react-sdk/ssr/universal/errors'
 
-const ContentDetails = ({contentResult}) => {
+const ContentDetails = ({contentResult, error}) => {
+    if (error) {
+        return <div>{error.fault.message}</div>
+    }
     if (!contentResult) {
         return <div>Loading...</div>
     }
@@ -11,8 +14,8 @@ const ContentDetails = ({contentResult}) => {
     return <div dangerouslySetInnerHTML={{__html: contentResult.c_body}} />
  }
 
-ContentDetails.getProps = async ({params}) => {
-    let contentResult
+ContentDetails.getProps = async ({params, res}) => {
+    let contentResult, error
     const result = await fetch(
         `http://localhost:3000/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/content/${params.id}?client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
     )
@@ -20,11 +23,13 @@ ContentDetails.getProps = async ({params}) => {
     if (result.ok) {
         contentResult = await result.json()
     } else {
-        const error = await result.json()
-        throw new HTTPError(result.status, error.fault.message)
+        error = await result.json()
+        if (res) {
+            res.status(result.status)
+        }
     }
 
-   return {contentResult}
+   return {contentResult, error}
 }
 
 ContentDetails.getTemplateName = () => 'content-details'
