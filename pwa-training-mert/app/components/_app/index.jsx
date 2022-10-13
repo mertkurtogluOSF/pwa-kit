@@ -114,7 +114,7 @@ const App = (props) => {
         })
         const fetchStore = async () => {
             const res = await fetch(
-                `http://localhost:3000/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/stores?latitude=${GEO_LOCATION.lat}&longitude=${GEO_LOCATION.long}&client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
+                `${getAppOrigin()}/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/stores?latitude=${GEO_LOCATION.lat}&longitude=${GEO_LOCATION.long}&client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
             )
             if (res.ok) {
                 const storeResult = await res.json()
@@ -377,7 +377,7 @@ Learn more with our localization guide. https://sfdc.co/localization-guide
 
     let privacyPolicy
     const result = await fetch(
-        `http://localhost:3000/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/content/privacy-policy?client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
+        `${getAppOrigin()}/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/content/privacy-policy?client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
     )
 
     if (result.ok) {

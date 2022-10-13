@@ -2,6 +2,7 @@ import React from 'react'
 import fetch from 'cross-fetch'
 import {List, ListItem} from '@chakra-ui/react'
 import Link from '../../components/link'
+import {getAppOrigin} from 'pwa-kit-react-sdk/utils/url'
 
 const ContentSearch = ({contentResult}) => {
     if (!contentResult) {
@@ -32,7 +33,7 @@ ContentSearch.getProps = async () => {
     let contentResult
     //Make a call to the URL substituting Key Values from table
     const res = await fetch(
-        `http://localhost:3000/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/content_search?q=about&client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
+        `${getAppOrigin()}/mobify/proxy/ocapi/s/RefArch/dw/shop/v20_2/content_search?q=about&client_id=7694c0c8-a73a-45b1-8790-616e3c97b981`
     )
     if (res.ok) {
         contentResult = await res.json()
