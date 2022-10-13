@@ -11,6 +11,8 @@ import {useIntl, FormattedMessage} from 'react-intl'
 
 // Components
 import {
+    Alert,
+    AlertIcon,
     Box,
     Button,
     SimpleGrid,
@@ -41,7 +43,15 @@ import {
 } from '../../constants'
 
 const MyHeader = ({name}) => {
-    return <h1>Hello, {name}!</h1>
+    return (
+        <Box>
+            <h1>Hello, {name}!</h1>
+            <Alert padding="10" status="success">
+                <AlertIcon />
+                Chakra UI components unlocked!
+            </Alert>
+        </Box>
+    )
 }
 
 /**
